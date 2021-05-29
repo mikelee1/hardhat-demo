@@ -37,8 +37,6 @@ describe("Home", function () {
   it("add user", async function () {
     const [owner, addr1, addr2] = await ethers.getSigners();
     await home.createUser(owner.address, "mike", "i am mike, hello!", 18);
-
-    // expect(await greeter.connect(addr2).getInvoker()).to.equal(addr2.address);
   });
 
   it("update user profile", async function () {

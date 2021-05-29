@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test",
+    "test": "cross-env NODE_ENV=test nodemon -e js,sol --ignore 'types/*'  --exec 'npx hardhat test'",
     "compile": "npx hardhat compile",
-    "flatten":"npx hardhat flatten",
-    "node":"npx hardhat node",
-    "deploy-local":"npx hardhat --network localhost run scripts/deploy.js"
+    "flatten": "npx hardhat flatten",
+    "node": "npx hardhat node",
+    "deploy-local": "npx hardhat --network localhost run scripts/deploy.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,8 @@
     "hardhat": "^2.3.0"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.1.0"
+    "@openzeppelin/contracts": "^4.1.0",
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.7"
   }
 }
