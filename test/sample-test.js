@@ -36,21 +36,31 @@ describe("Home", function () {
 
   it("add user", async function () {
     const [owner, addr1, addr2] = await ethers.getSigners();
-    await home.createUser("mike", "i am mike, hello!", 18);
+    await home.createUser(owner.address, "mike", "i am mike, hello!", 18);
 
     // expect(await greeter.connect(addr2).getInvoker()).to.equal(addr2.address);
   });
 
-  it("update user", async function () {
+  it("update user profile", async function () {
     const [owner, addr1, addr2] = await ethers.getSigners();
     let name = "mike";
     let oldProfile = "i am mike, hello!";
     let newProfile = "i am 666, hello!";
-    await home.createUser(name, oldProfile, 18);
-    expect(await home.queryMyProfile()).to.equal(oldProfile);
+
+    await home.createUser(owner.address, name, oldProfile, 18);
+    await home.createUser(addr1.address, "addr1", "i am addr1, hello!", 28);
+
+    let result = await home.queryMyInfo();
+    expect(result[1]).to.equal(oldProfile);
 
     await home.updateProfile(newProfile);
-    expect(await home.queryMyName()).to.equal(name);
-    expect(await home.queryMyProfile()).to.equal(newProfile);
+    result = await home.queryMyInfo();
+    expect(result[0]).to.equal(name);
+    expect(result[1]).to.equal(newProfile);
+
+    await home.connect(addr1).updateProfile(newProfile);
+    result = await home.connect(addr1).queryMyInfo();
+    expect(result[0]).to.equal("addr1");
+    expect(result[1]).to.equal(newProfile);
   });
 });

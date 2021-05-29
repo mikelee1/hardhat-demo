@@ -23,6 +23,7 @@ contract Home {
     }
 
     function createUser(
+        address _address,
         string calldata _name,
         string calldata _profile,
         uint8 _age
@@ -32,7 +33,7 @@ contract Home {
         _user.name = _name;
         _user.profile = _profile;
         _user.age = _age;
-        users[msg.sender] = _user;
+        users[_address] = _user;
     }
 
     function updateProfile(string memory _profile) public isValid {
@@ -42,14 +43,18 @@ contract Home {
         emit UpdateProfile(msg.sender, _profile);
     }
 
-    function queryMyName() public view isValid returns (string memory) {
-        User memory _user = users[msg.sender];
-        return _user.name;
-    }
-
-    function queryMyProfile() public view isValid returns (string memory) {
-        User memory _user = users[msg.sender];
-        return _user.profile;
+    function queryMyInfo()
+        public
+        view
+        isValid
+        returns (
+            string memory,
+            string memory,
+            uint8
+        )
+    {
+        User memory user = users[msg.sender];
+        return (user.name, user.profile, user.age);
     }
 
     modifier isValid {
