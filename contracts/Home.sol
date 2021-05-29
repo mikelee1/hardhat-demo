@@ -1,11 +1,12 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.7.0;
+
 // pragma experimental ABIEncoderV2;
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 contract Home {
-    address internal admin;
+    address public admin;
     address internal greeter;
     struct User {
         bool isVaild;
@@ -27,7 +28,7 @@ contract Home {
         string calldata _name,
         string calldata _profile,
         uint8 _age
-    ) public onlyAdmin {
+    ) public onlyAdmin newUser(_address) {
         User memory _user;
         _user.isVaild = true;
         _user.name = _name;
@@ -36,7 +37,7 @@ contract Home {
         users[_address] = _user;
     }
 
-    function updateProfile(string memory _profile) public isValid {
+    function updateProfile(string memory _profile) public isValid(msg.sender) {
         User memory _user = users[msg.sender];
         _user.profile = _profile;
         users[msg.sender] = _user;
@@ -46,7 +47,7 @@ contract Home {
     function queryMyInfo()
         public
         view
-        isValid
+        isValid(msg.sender)
         returns (
             string memory,
             string memory,
@@ -57,8 +58,13 @@ contract Home {
         return (user.name, user.profile, user.age);
     }
 
-    modifier isValid {
-        require(users[msg.sender].isVaild, "user is invalid");
+    modifier newUser(address _address) {
+        require(!users[_address].isVaild, "user is exist");
+        _;
+    }
+
+    modifier isValid(address _address) {
+        require(users[_address].isVaild, "user is invalid");
         _;
     }
 
