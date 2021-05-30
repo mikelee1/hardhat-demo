@@ -37,6 +37,32 @@ describe("Home", function () {
   it("add user", async function () {
     const [owner, addr1, addr2] = await ethers.getSigners();
     await home.createUser(owner.address, "mike", "i am mike, hello!", 18);
+    let result = await home.queryMyInfo();
+    expect(result[0]).to.equal("mike");
+  });
+
+  it("add exist user", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    await home.createUser(owner.address, "mike", "i am mike, hello!", 18);
+    await expect(
+      home.createUser(owner.address, "mike", "i am mike, hello!", 18)
+    ).to.be.revertedWith("user is exist");
+  });
+
+  it("invoke is valid", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    await expect(
+      home.connect(addr1).updateProfile("i am mike, hello!")
+    ).to.be.revertedWith("user is invalid");
+  });
+
+  it("fail to create user", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    await expect(
+      home
+        .connect(addr1)
+        .createUser(addr1.address, "addr1", "i am addr1, hello!", 28)
+    ).to.be.revertedWith("need admin");
   });
 
   it("update user profile", async function () {

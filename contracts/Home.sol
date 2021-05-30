@@ -16,6 +16,7 @@ contract Home {
     }
     mapping(address => User) users;
 
+    event CreateUser(address _sender);
     event UpdateProfile(address _sender, string _profile);
 
     constructor(address _greeter) {
@@ -35,6 +36,7 @@ contract Home {
         _user.profile = _profile;
         _user.age = _age;
         users[_address] = _user;
+        emit CreateUser(_address);
     }
 
     function updateProfile(string memory _profile) public isValid(msg.sender) {
@@ -69,7 +71,7 @@ contract Home {
     }
 
     modifier onlyAdmin {
-        require(msg.sender == admin, "");
+        require(msg.sender == admin, "need admin");
         _;
     }
 }
