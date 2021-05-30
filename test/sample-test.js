@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 
-describe("Greeter", function () {
+describe("GreeterContract", function () {
   let greeter;
   beforeEach(async function () {
     const Greeter = await ethers.getContractFactory("Greeter");
@@ -21,7 +21,7 @@ describe("Greeter", function () {
   });
 });
 
-describe("Home", function () {
+describe("HomeContract", function () {
   let greeter;
   let home;
   beforeEach(async function () {
@@ -86,5 +86,23 @@ describe("Home", function () {
     result = await home.connect(addr1).queryMyInfo();
     expect(result[0]).to.equal("addr1");
     expect(result[1]).to.equal(newProfile);
+  });
+});
+
+describe("TradeContract", function () {
+  let greeter;
+  let home;
+  beforeEach(async function () {
+    const TradeContract = await ethers.getContractFactory("TradeContract");
+    tradeContract = await TradeContract.deploy(1, 100);
+    await tradeContract.deployed();
+  });
+
+  it("add trade", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    await tradeContract.createTrade(1, { value: 2 });
+    let result = await tradeContract.queryTrade(0);
+    expect(result[0]).to.equal(owner.address);
+    expect(result[2].toNumber()).to.equal(1);
   });
 });
