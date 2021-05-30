@@ -149,7 +149,12 @@ describe("TradeContract", function () {
       tradeContract.connect(owner).withdraw(_tradeId)
     ).to.be.revertedWith("invalid withdraw order");
 
-    await tradeContract.connect(addr1).withdraw(_tradeId);
-    await tradeContract.connect(owner).withdraw(_tradeId);
+    await expect(tradeContract.connect(addr1).withdraw(_tradeId))
+      .to.emit(tradeContract, "WithdrawEvent")
+      .withArgs(_tradeId, addr1.address);
+
+    await expect(tradeContract.connect(owner).withdraw(_tradeId))
+      .to.emit(tradeContract, "WithdrawEvent")
+      .withArgs(_tradeId, owner.address);
   });
 });
