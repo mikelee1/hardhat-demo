@@ -99,10 +99,57 @@ describe("TradeContract", function () {
   });
 
   it("add trade", async function () {
+    let _value = 1;
+    let _tradeId = 0;
     const [owner, addr1, addr2] = await ethers.getSigners();
-    await tradeContract.createTrade(1, { value: 2 });
-    let result = await tradeContract.queryTrade(0);
+    await tradeContract.createTrade(_value, { value: _value });
+    let result = await tradeContract.queryTrade(_tradeId);
     expect(result[0]).to.equal(owner.address);
-    expect(result[2].toNumber()).to.equal(1);
+    expect(result[2].toNumber()).to.equal(_value);
+  });
+
+  it("invalid tradeId", async function () {
+    await expect(tradeContract.queryTrade(1)).to.be.revertedWith(
+      "invalid tradeId"
+    );
+  });
+
+  it("deposit trade", async function () {
+    let _value = 1;
+    let _tradeId = 0;
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    await tradeContract.createTrade(_value, { value: _value });
+    await tradeContract
+      .connect(addr1)
+      .depositTrade(_tradeId, { value: _value });
+  });
+
+  it("buy trade", async function () {
+    let _value = 1;
+    let _tradeId = 0;
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    await tradeContract.createTrade(_value, { value: _value });
+    await tradeContract
+      .connect(addr1)
+      .depositTrade(_tradeId, { value: _value });
+    await tradeContract.connect(addr1).buyTrade(_tradeId, { value: _value });
+  });
+
+  it("withdraw", async function () {
+    let _value = 1;
+    let _tradeId = 0;
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    await tradeContract.createTrade(_value, { value: _value });
+    await tradeContract
+      .connect(addr1)
+      .depositTrade(_tradeId, { value: _value });
+    await tradeContract.connect(addr1).buyTrade(_tradeId, { value: _value });
+
+    await expect(
+      tradeContract.connect(owner).withdraw(_tradeId)
+    ).to.be.revertedWith("invalid withdraw order");
+
+    await tradeContract.connect(addr1).withdraw(_tradeId);
+    await tradeContract.connect(owner).withdraw(_tradeId);
   });
 });
