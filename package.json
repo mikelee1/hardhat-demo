@@ -9,13 +9,14 @@
     "flatten": "npx hardhat flatten",
     "node": "npx hardhat node",
     "deploy-local": "npx hardhat --network localhost run scripts/deploy.js",
-    "coverage":"npx hardhat coverage --solcoverjs .solcover.js"
+    "coverage": "npx hardhat coverage --solcoverjs .solcover.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "^3.1.0-solc-0.7",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.3.0",
     "ethers": "^5.2.0",
@@ -23,7 +24,6 @@
     "solidity-coverage": "^0.7.16"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.1.0",
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.7"
   }

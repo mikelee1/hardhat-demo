@@ -158,3 +158,37 @@ describe("TradeContract", function () {
       .withArgs(_tradeId, owner.address);
   });
 });
+
+describe("TokenContract", function () {
+  let token;
+  beforeEach(async function () {
+    const Token = await ethers.getContractFactory("TokenContract");
+    token = await Token.deploy("LT", "Lee token", 10000000);
+    await token.deployed();
+  });
+
+  it("transfer", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    let formerBalance = (await token.balanceOf(owner.address)).toNumber();
+    await token.transfer(addr1.address, 10);
+    expect((await token.balanceOf(owner.address)).toNumber()).to.equal(
+      formerBalance - 10
+    );
+  });
+
+  it("mint", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    let formerBalance = (await token.balanceOf(owner.address)).toNumber();
+    let _amount = 10;
+    await expect(token.connect(addr1).mint(owner.address, 10)).to.revertedWith(
+      "must admin"
+    );
+
+    await expect(token.mint(owner.address, _amount))
+      .to.emit(token, "Mint")
+      .withArgs(owner.address, _amount);
+    expect((await token.balanceOf(owner.address)).toNumber()).to.equal(
+      formerBalance + _amount
+    );
+  });
+});
