@@ -1,5 +1,26 @@
 const { expect } = require("chai");
 
+describe("Mainnet contract", function () {
+  it("test uni token", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    const MyContract = await ethers.getContractFactory("Uni");
+    const contract = await MyContract.deploy(
+      "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984" // The deployed mainnet contract address
+    );
+    await contract.deployed();
+
+    // Now you can call functions of the contract
+    expect((await contract.totalSupply()).toString()).to.equal(
+      "1000000000000000000000000000"
+    );
+    expect(await contract.name()).to.equal("Uniswap");
+    expect(await contract.symbol()).to.equal("UNI");
+    expect(await contract.minter()).to.equal(
+      "0x1a9C8182C09F50C8318d769245beA52c32BE35BC"
+    );
+  });
+});
+
 describe("GreeterContract", function () {
   let greeter;
   beforeEach(async function () {

@@ -13,10 +13,20 @@ task("accounts", "Prints the list of accounts", async () => {
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
+//mike go to https://hardhat.org/guides/mainnet-forking.html
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
   solidity: "0.7.3",
+  //mike if dont use forkmain, comment out
+  networks: {
+    hardhat: {
+      forking: {
+        url: "https://eth-mainnet.alchemyapi.io/v2/lPc2RYVob1erdJsnmysPtxVt-RnRTmJm",
+        blockNumber: 12539442,
+      },
+    },
+  },
 };
