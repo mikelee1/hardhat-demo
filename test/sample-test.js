@@ -7,6 +7,7 @@ describe("GreeterContract", function () {
     greeter = await Greeter.deploy("Hello, world!");
     await greeter.deployed();
   });
+
   it("Should return the new greeting once it's changed", async function () {
     expect(await greeter.greet()).to.equal("Hello, world!");
     await greeter.setGreeting("Hola, mundo!");
@@ -165,6 +166,12 @@ describe("TokenContract", function () {
     const Token = await ethers.getContractFactory("TokenContract");
     token = await Token.deploy("LT", "Lee token", 10000000);
     await token.deployed();
+  });
+
+  it("info", async function () {
+    expect(await token.name()).to.equal("LT");
+    expect(await token.symbol()).to.equal("Lee token");
+    expect(await token.decimals()).to.equal(18);
   });
 
   it("transfer", async function () {
