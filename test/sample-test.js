@@ -220,3 +220,35 @@ describe("TokenContract", function () {
     );
   });
 });
+
+describe("NftContract", function () {
+  let nft;
+  beforeEach(async function () {
+    const Nft = await ethers.getContractFactory("NftContract");
+    nft = await Nft.deploy("LN", "Lee Nft");
+    await nft.deployed();
+  });
+
+  it("info", async function () {
+    expect(await nft.name()).to.equal("LN");
+    expect(await nft.symbol()).to.equal("Lee Nft");
+  });
+
+  it("mint to addr1", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    let ipfsUrl =
+      "ipfs://https://gateway.pinata.cloud/ipfs/QmVSJL4RuDdCqXyG2FfvYbY6CPVQKyNmEyDDjSfe7pXap2/";
+    let tokenId = 1; //start from 1
+    await expect(nft.mint(addr1.address, "test", ipfsUrl))
+      .to.emit(nft, "Mint")
+      .withArgs(addr1.address, "test", ipfsUrl);
+    await expect(nft.mint(addr1.address, "test", ipfsUrl)).to.be.revertedWith(
+      "hash already exist"
+    );
+    expect(await nft.totalSupply()).to.equal(1);
+    expect(await nft.balanceOf(addr2.address)).to.equal(0);
+    expect(await nft.balanceOf(addr1.address)).to.equal(1);
+    expect(await nft.tokenURI(tokenId)).to.equal(ipfsUrl);
+    expect(await nft.ownerOf(tokenId)).to.equal(addr1.address);
+  });
+});
