@@ -234,7 +234,7 @@ describe("NftContract", function () {
     expect(await nft.symbol()).to.equal("Lee Nft");
   });
 
-  it("mint to addr1", async function () {
+  it("mint to addr1, then transfer to addr2", async function () {
     const [owner, addr1, addr2] = await ethers.getSigners();
     let ipfsUrl =
       "ipfs://https://gateway.pinata.cloud/ipfs/QmVSJL4RuDdCqXyG2FfvYbY6CPVQKyNmEyDDjSfe7pXap2/";
@@ -250,5 +250,11 @@ describe("NftContract", function () {
     expect(await nft.balanceOf(addr1.address)).to.equal(1);
     expect(await nft.tokenURI(tokenId)).to.equal(ipfsUrl);
     expect(await nft.ownerOf(tokenId)).to.equal(addr1.address);
+
+    await expect(
+      nft.connect(addr1).transferFrom(addr1.address, addr2.address, tokenId)
+    )
+      .to.emit(nft, "Transfer")
+      .withArgs(addr1.address, addr2.address, tokenId);
   });
 });
