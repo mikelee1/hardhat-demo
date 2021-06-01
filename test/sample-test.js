@@ -1,3 +1,4 @@
+const { BigNumber } = require("@ethersproject/bignumber");
 const { expect } = require("chai");
 
 describe("Mainnet contract", function () {
@@ -256,5 +257,31 @@ describe("NftContract", function () {
     )
       .to.emit(nft, "Transfer")
       .withArgs(addr1.address, addr2.address, tokenId);
+  });
+});
+
+describe("LotteryContract", function () {
+  let lottery;
+  beforeEach(async function () {
+    const Lottery = await ethers.getContractFactory("LotteryContract");
+    lottery = await Lottery.deploy();
+    await lottery.deployed();
+  });
+
+  it("enter game", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+
+    await expect(lottery.enterGame({ value: 1 }))
+      .to.emit(lottery, "enterGameEvent")
+      .withArgs(owner.address);
+  });
+
+  it("start game", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+
+    await lottery.enterGame({ value: 1 });
+    await lottery.connect(addr1).enterGame({ value: 1 });
+    await lottery.connect(addr2).enterGame({ value: 1 });
+    await expect(lottery.startGame()).to.emit(lottery, "startGameEvent");
   });
 });
