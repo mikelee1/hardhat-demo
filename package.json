@@ -8,6 +8,7 @@
     "compile": "npx hardhat compile",
     "flatten": "npx hardhat flatten",
     "node": "npx hardhat node",
+    "unlimit": "npm run node --allowUnlimitedContractSize",
     "deploy-local": "npx hardhat --network localhost run scripts/deploy.js",
     "coverage": "npx hardhat coverage --solcoverjs .solcover.js"
   },
@@ -17,6 +18,8 @@
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/contracts": "^3.1.0-solc-0.7",
+    "@uniswap/v3-core": "^1.0.0",
+    "@uniswap/v3-periphery": "^1.1.0",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.3.0",
     "ethers": "^5.2.0",

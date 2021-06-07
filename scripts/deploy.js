@@ -13,10 +13,8 @@ async function main() {
   // await run("compile");
 
   const [deployer] = await ethers.getSigners();
-  console.log(
-    "Deploying contracts with the account:",
-    await deployer.getAddress()
-  );
+  deployerAddress = await deployer.getAddress();
+  console.log("Deploying contracts with the account:", deployerAddress);
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   // We get the contract to deploy
@@ -28,8 +26,29 @@ async function main() {
   const home = await Home.deploy(greeter.address);
   await home.deployed();
 
+  const Vault = await ethers.getContractFactory("AlphaVault");
+  const vault = await Vault.deploy(
+    "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36",
+    "50000",
+    100000000000000000000n
+  );
+  await vault.deployed();
+
+  const Strategy = await ethers.getContractFactory("AlphaStrategy");
+  const strategy = await Strategy.deploy(
+    vault.address,
+    3600,
+    1200,
+    100,
+    60,
+    deployerAddress
+  );
+  await vault.deployed();
+
   console.log("Greeter deployed to:", greeter.address);
   console.log("Home deployed to:", home.address);
+  console.log("Vault deployed to:", vault.address);
+  console.log("Strategy deployed to:", strategy.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

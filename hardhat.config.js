@@ -27,6 +27,8 @@ module.exports = {
         url: "https://eth-mainnet.alchemyapi.io/v2/lPc2RYVob1erdJsnmysPtxVt-RnRTmJm",
         blockNumber: 12539442,
       },
+      allowUnlimitedContractSize: true,
+      blockGasLimit: 0x1fffffffffffff,
     },
   },
 };
