@@ -1,5 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require("solidity-coverage");
+require("hardhat-gas-reporter");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -27,8 +28,8 @@ module.exports = {
         url: "https://eth-mainnet.alchemyapi.io/v2/lPc2RYVob1erdJsnmysPtxVt-RnRTmJm",
         blockNumber: 12539442,
       },
+      //deploy-local时，需要以下设置
       allowUnlimitedContractSize: true,
-      blockGasLimit: 0x1fffffffffffff,
     },
   },
 };
