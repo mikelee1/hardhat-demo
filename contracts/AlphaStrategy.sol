@@ -33,6 +33,7 @@ import "./AlphaVault.sol";
  *          achieves this without the need to swap directly on Uniswap and pay
  *          fees.
  */
+//mike mainnet 0x40C36799490042b31Efc4D3A7F8BDe5D3cB03526
 contract AlphaStrategy {
     AlphaVault public vault;
     IUniswapV3Pool public pool;
@@ -44,7 +45,7 @@ contract AlphaStrategy {
     uint32 public twapDuration;
     address public keeper;
 
-    uint256 public lastRebalance;
+    uint256 public lastRebalance;//mike 记录上一次rebalance时间
     int24 public lastTick;
 
     /**
@@ -63,9 +64,9 @@ contract AlphaStrategy {
         uint32 _twapDuration,
         address _keeper
     ) {
-        vault = AlphaVault(_vault);
-        pool = vault.pool();
-        tickSpacing = pool.tickSpacing();
+        vault = AlphaVault(_vault);//mike 需要用到vault
+        pool = vault.pool();//mike v3池子
+        tickSpacing = pool.tickSpacing();//mike 间距
 
         baseThreshold = _baseThreshold;
         limitThreshold = _limitThreshold;
@@ -85,6 +86,7 @@ contract AlphaStrategy {
      * @notice Calculates new ranges for orders and calls `vault.rebalance()`
      * so that vault can update its positions. Can only be called by keeper.
      */
+    //mike 重新调整做市区间
     function rebalance() external {
         require(msg.sender == keeper, "keeper");
 
@@ -104,7 +106,7 @@ contract AlphaStrategy {
 
         int24 tickFloor = _floor(tick);
         int24 tickCeil = tickFloor + tickSpacing;
-
+        //mike 发起vault的rebalance
         vault.rebalance(
             tickFloor - baseThreshold,
             tickCeil + baseThreshold,
