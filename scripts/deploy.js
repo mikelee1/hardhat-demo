@@ -3,7 +3,7 @@
 //
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-
+const uniV3Pool = "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36";
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -26,22 +26,25 @@ async function main() {
   const home = await Home.deploy(greeter.address);
   await home.deployed();
 
+  const _protocolFee = "50000";
+  const _maxTotalSupply = 100000000000000000000n;
   const Vault = await ethers.getContractFactory("AlphaVault");
-  const vault = await Vault.deploy(
-    "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36",
-    "50000",
-    100000000000000000000n
-  );
+  const vault = await Vault.deploy(uniV3Pool, _protocolFee, _maxTotalSupply);
   await vault.deployed();
 
+  const _baseThreshold = 3600;
+  const _limitThreshold = 1200;
+  const _maxTwapDeviation = 100;
+  const _twapDuration = 60;
+  const _keeper = deployerAddress;
   const Strategy = await ethers.getContractFactory("AlphaStrategy");
   const strategy = await Strategy.deploy(
     vault.address,
-    3600,
-    1200,
-    100,
-    60,
-    deployerAddress
+    _baseThreshold,
+    _limitThreshold,
+    _maxTwapDeviation,
+    _twapDuration,
+    _keeper
   );
   await vault.deployed();
 

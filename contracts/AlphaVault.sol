@@ -15,6 +15,7 @@ import "@uniswap/v3-periphery/contracts/libraries/LiquidityAmounts.sol";
 import "@uniswap/v3-periphery/contracts/libraries/PositionKey.sol";
 
 import "../interfaces/IVault.sol";
+import "hardhat/console.sol";
 
 /**
  * @title   Alpha Vault
@@ -146,7 +147,7 @@ contract AlphaVault is IVault, IUniswapV3MintCallback, ERC20, ReentrancyGuard {
         //mike 上面通过的话，就将amount0和amount1转到本vault
         if (amount0 > 0) token0.safeTransferFrom(msg.sender, address(this), amount0);
         if (amount1 > 0) token1.safeTransferFrom(msg.sender, address(this), amount1);
-
+        
         // Mint shares to recipient
         //mike mint shares给to
         _mint(to, shares);
@@ -608,5 +609,13 @@ contract AlphaVault is IVault, IUniswapV3MintCallback, ERC20, ReentrancyGuard {
     modifier onlyGovernance {
         require(msg.sender == governance, "governance");
         _;
+    }
+
+    function myBalance0() public view returns (uint256) {
+        return token0.balanceOf(msg.sender);
+    }
+
+    function myBalance1() public view returns (uint256) {
+        return token1.balanceOf(msg.sender);
     }
 }

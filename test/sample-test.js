@@ -1,6 +1,113 @@
 const { BigNumber } = require("@ethersproject/bignumber");
 const { expect } = require("chai");
 
+describe("Alpha vault and Strategy contract", function () {
+  const uniV3Pool = "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"; //mike 这个是v3
+  const uniV2Pool = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"; //mike 这里实际用的是v2
+  let vault;
+  let strategy;
+  let uniswapPool;
+
+  const _baseThreshold = 3600;
+  const _limitThreshold = 1200;
+  const _maxTwapDeviation = 100;
+  const _twapDuration = 60;
+
+  const _protocolFee = "50000";
+  const _maxTotalSupply = 100000000000000000000n;
+
+  const weth = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+  const usdt = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+  const factory = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f";
+  const _tickSpacing = 60;
+
+  beforeEach(async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+
+    //mike 部署vault
+    const Vault = await ethers.getContractFactory("AlphaVault");
+    vault = await Vault.deploy(uniV3Pool, _protocolFee, _maxTotalSupply);
+    await vault.deployed();
+    //mike 部署strategy
+    const Strategy = await ethers.getContractFactory("AlphaStrategy");
+    strategy = await Strategy.deploy(
+      vault.address,
+      _baseThreshold,
+      _limitThreshold,
+      _maxTwapDeviation,
+      _twapDuration,
+      owner.address
+    );
+    await strategy.deployed();
+
+    //mike 部署uniswap
+    const UniswapPool = await ethers.getContractFactory("UniswapPool");
+    uniswapPool = await UniswapPool.deploy(
+      uniV2Pool // The deployed mainnet contract address
+    );
+    await uniswapPool.deployed();
+  });
+
+  it("test uniswapPool", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+
+    // Now you can call functions of the contract
+    expect(await uniswapPool.getFactory()).to.equal(
+      "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+    );
+    var weth = await uniswapPool.getWETH();
+    await uniswapPool
+      .connect(owner)
+      .swapExactETHForTokens(0, [weth, usdt], owner.address, 100000000000, {
+        value: 100000000000000000000n,
+      });
+    //todo approve usdt
+
+    // await uniswapPool
+    //   .connect(owner)
+    //   .swapExactTokensForETH(
+    //     127920102035,
+    //     0,
+    //     [usdt, weth],
+    //     owner.address,
+    //     100000000000
+    //   );
+  });
+
+  it("test vault basicinfo", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+
+    // Now you can call functions of the contract
+    expect(await vault.token0()).to.equal(weth);
+    expect(await vault.token1()).to.equal(usdt);
+    expect(await vault.protocolFee()).to.equal(_protocolFee);
+    expect(await vault.maxTotalSupply()).to.equal(_maxTotalSupply);
+    expect(await vault.tickSpacing()).to.equal(_tickSpacing);
+  });
+
+  it("test strategy basicinfo", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+
+    // Now you can call functions of the contract
+    expect(await strategy.baseThreshold()).to.equal(_baseThreshold);
+    expect(await strategy.limitThreshold()).to.equal(_limitThreshold);
+    expect(await strategy.maxTwapDeviation()).to.equal(_maxTwapDeviation);
+  });
+
+  it("test vault", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+
+    // Now you can call functions of the contract
+    console.log((await owner.getBalance()).toString());
+    expect(await vault.accruedProtocolFees0()).to.equal(0);
+    console.log((await vault.myBalance0()).toNumber());
+    console.log(await vault.myBalance1());
+    await expect(
+      vault.connect(owner).deposit(100, 100, 0, 0, owner.address)
+    ).to.emit(vault, "Deposit");
+  });
+});
+
 describe("Mainnet contract", function () {
   it("test uni token", async function () {
     const [owner, addr1, addr2] = await ethers.getSigners();

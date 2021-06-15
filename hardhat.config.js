@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require("solidity-coverage");
-require("hardhat-gas-reporter");
+//mike 如果需要统计报告
+// require("hardhat-gas-reporter");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -22,6 +23,7 @@ task("accounts", "Prints the list of accounts", async () => {
 module.exports = {
   solidity: "0.7.3",
   //mike if dont use forkmain, comment out
+  //mike 和外部合约交互时，会使用forkmain
   networks: {
     hardhat: {
       forking: {
