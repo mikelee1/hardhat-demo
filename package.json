@@ -10,6 +10,7 @@
     "node": "npx hardhat node",
     "unlimit": "npm run node --allowUnlimitedContractSize",
     "deploy-local": "npx hardhat --network localhost run scripts/deploy.js",
+    "deploy-bsc": "npx hardhat run --network testnet scripts/deploy.js",
     "coverage": "npx hardhat coverage --solcoverjs .solcover.js"
   },
   "author": "",
@@ -23,7 +24,7 @@
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.3.0",
     "ethers": "^5.2.0",
-    "hardhat": "^2.3.0",
+    "hardhat": "^2.4.1",
     "hardhat-gas-reporter": "^1.0.4",
     "solidity-coverage": "^0.7.16"
   },

@@ -40,7 +40,9 @@ contract UniswapPool {
         external
         {
             // console.log(IUniswap(uniswap).swapExactTokensForETH(amountIn,amountOutMin, path, to, deadline));
-            uint[] memory amounts =IUniswap(uniswap).swapExactTokensForETH(amountIn,amountOutMin, path, to, deadline);
+            IERC20(path[0]).transferFrom(msg.sender, address(this), amountIn);
+            IERC20(path[0]).approve(uniswap, amountIn);
+            uint[] memory amounts =IUniswap(uniswap).swapExactTokensForETH(amountIn, amountOutMin, path, to, deadline);
             // console.log("swapExactTokensForETH amounts: ",amounts);
         }
 }

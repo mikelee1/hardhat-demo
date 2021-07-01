@@ -7,6 +7,9 @@ describe("Alpha vault and Strategy contract", function () {
   let vault;
   let strategy;
   let uniswapPool;
+  let usdtIns;
+  let token0Ins;
+  let token1Ins;
 
   const _baseThreshold = 3600;
   const _limitThreshold = 1200;
@@ -46,6 +49,31 @@ describe("Alpha vault and Strategy contract", function () {
       uniV2Pool // The deployed mainnet contract address
     );
     await uniswapPool.deployed();
+
+    //mike 部署usdt
+    const MyContract = await ethers.getContractFactory("TokenContract");
+    usdtIns = await MyContract.attach(
+      usdt // The deployed contract address
+    );
+
+    let token0Address = await vault.token0();
+    token0Ins = await MyContract.attach(
+      token0Address // The deployed contract address
+    );
+
+    let token1Address = await vault.token1();
+    token1Ins = await MyContract.attach(
+      token1Address // The deployed contract address
+    );
+
+    // Now you can call functions of the contract
+    // console.log(await usdtIns.name());
+    // console.log(await token0Ins.name());
+    // console.log(await token1Ins.name());
+
+    // expect(await usdt.owner()).to.equal(
+    //   "0xc6cde7c39eb2f0f0095f41570af89efc2c1ea828"
+    // );
   });
 
   it("test uniswapPool", async function () {
@@ -55,23 +83,27 @@ describe("Alpha vault and Strategy contract", function () {
     expect(await uniswapPool.getFactory()).to.equal(
       "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
     );
-    var weth = await uniswapPool.getWETH();
-    await uniswapPool
-      .connect(owner)
-      .swapExactETHForTokens(0, [weth, usdt], owner.address, 100000000000, {
-        value: 100000000000000000000n,
-      });
-    //todo approve usdt
+    // var weth = await uniswapPool.getWETH();
+    // await uniswapPool
+    //   .connect(owner)
+    //   .swapExactETHForTokens(0, [weth, usdt], owner.address, 100000000000, {
+    //     value: 100000000000000000000n,
+    //   });
+    // // approve usdt
+    // const allowance = 17920102035;
+    // expect(
+    //   (await usdtIns.allowance(owner.address, uniswapPool.address)).toNumber()
+    // ).to.equal(0);
+    // await usdtIns.approve(uniswapPool.address, allowance);
+    // expect(
+    //   (await usdtIns.allowance(owner.address, uniswapPool.address)).toNumber()
+    // ).to.equal(allowance);
 
     // await uniswapPool
     //   .connect(owner)
-    //   .swapExactTokensForETH(
-    //     127920102035,
-    //     0,
-    //     [usdt, weth],
-    //     owner.address,
-    //     100000000000
-    //   );
+    //   .swapExactETHForTokens(0, [weth, weth], owner.address, 100000000000, {
+    //     value: 100000000000000000000n,
+    //   });
   });
 
   it("test vault basicinfo", async function () {
@@ -100,11 +132,18 @@ describe("Alpha vault and Strategy contract", function () {
     // Now you can call functions of the contract
     console.log((await owner.getBalance()).toString());
     expect(await vault.accruedProtocolFees0()).to.equal(0);
-    console.log((await vault.myBalance0()).toNumber());
-    console.log(await vault.myBalance1());
-    await expect(
-      vault.connect(owner).deposit(100, 100, 0, 0, owner.address)
-    ).to.emit(vault, "Deposit");
+
+    console.log(
+      "weth balance: ",
+      (await token0Ins.balanceOf(owner.address)).toNumber()
+    );
+    console.log(
+      "usdt balance: ",
+      (await token1Ins.balanceOf(owner.address)).toNumber()
+    );
+    // await expect(
+    //   vault.connect(owner).deposit(100, 100, 0, 0, owner.address)
+    // ).to.emit(vault, "Deposit");
   });
 });
 
