@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test nodemon -e js,sol --ignore 'types/*'  --exec 'npx hardhat test'",
+    "local-test": "cross-env NODE_ENV=test nodemon -e js,sol --ignore 'types/*'  --exec 'npx hardhat --network localhost test'",
     "compile": "npx hardhat compile",
     "flatten": "npx hardhat flatten",
     "node": "npx hardhat node",
+    "rinkeby-node": "npx hardhat node",
     "unlimit": "npm run node --allowUnlimitedContractSize",
     "deploy-local": "npx hardhat --network localhost run scripts/deploy.js",
-    "deploy-bsc": "npx hardhat run --network testnet scripts/deploy.js",
+    "deploy-bsc": "npx hardhat --network testnet run scripts/deploy.js",
     "coverage": "npx hardhat coverage --solcoverjs .solcover.js"
   },
   "author": "",

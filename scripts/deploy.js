@@ -32,26 +32,26 @@ async function main() {
   const vault = await Vault.deploy(uniV3Pool, _protocolFee, _maxTotalSupply);
   await vault.deployed();
 
-  const _baseThreshold = 3600;
-  const _limitThreshold = 1200;
-  const _maxTwapDeviation = 100;
-  const _twapDuration = 60;
-  const _keeper = deployerAddress;
-  const Strategy = await ethers.getContractFactory("AlphaStrategy");
-  const strategy = await Strategy.deploy(
-    vault.address,
-    _baseThreshold,
-    _limitThreshold,
-    _maxTwapDeviation,
-    _twapDuration,
-    _keeper
-  );
-  await vault.deployed();
+  // const _baseThreshold = 3600;
+  // const _limitThreshold = 1200;
+  // const _maxTwapDeviation = 100;
+  // const _twapDuration = 60;
+  // const _keeper = deployerAddress;
+  // const Strategy = await ethers.getContractFactory("AlphaStrategy");
+  // const strategy = await Strategy.deploy(
+  //   vault.address,
+  //   _baseThreshold,
+  //   _limitThreshold,
+  //   _maxTwapDeviation,
+  //   _twapDuration,
+  //   _keeper
+  // );
+  // console.log("Strategy deployed to:", strategy.address);
+  // await vault.deployed();
+  // console.log("Vault deployed to:", vault.address);
 
   console.log("Greeter deployed to:", greeter.address);
   console.log("Home deployed to:", home.address);
-  console.log("Vault deployed to:", vault.address);
-  console.log("Strategy deployed to:", strategy.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

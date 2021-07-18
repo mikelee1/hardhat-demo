@@ -1,6 +1,28 @@
 const { BigNumber } = require("@ethersproject/bignumber");
 const { expect } = require("chai");
 
+describe("contract", function () {
+  let trial;
+  beforeEach(async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    //mike 部署trial
+    const Trial = await ethers.getContractFactory("Trial");
+    trial = await Trial.deploy();
+    await trial.deployed();
+  });
+
+  it("test trial", async function () {
+    const [owner, addr1, addr2] = await ethers.getSigners();
+    console.log(
+      await trial.Keccak256(
+        "0x9Fb9c177931a03666B83328Ec0038DedbDCf309B",
+        199260,
+        200460
+      )
+    ); //0x64c30153ebe6a0c16bbf31084fc7332f721ffa96e4577f5a664e281036335d79
+  });
+});
+
 describe("Alpha vault and Strategy contract", function () {
   const uniV3Pool = "0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"; //mike 这个是v3
   const uniV2Pool = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"; //mike 这里实际用的是v2
